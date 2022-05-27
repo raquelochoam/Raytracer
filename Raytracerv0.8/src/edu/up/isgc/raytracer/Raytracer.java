@@ -43,7 +43,7 @@ public class Raytracer {
         //scene02.addObject(new Sphere(new Vector3D(0.35f, 1f, 4.5f), 0.3f, Color.BLUE));
         scene02.addObject(new Sphere(new Vector3D(2f, 1f, 1.5f), 0.4f, Color.WHITE));
         scene02.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(-3f, 2f, 2f), Color.WHITE));
-        scene02.addObject(OBJReader.GetModel3D("SmallTeapot.obj", new Vector3D(0f, -1.8f, 1.5f), Color.MAGENTA));
+        scene02.addObject(OBJReader.GetModel3D("SmallTeapot.obj", new Vector3D(0f, -1.73f, 1.5f), Color.MAGENTA));
 
         //scene02.addObject(OBJReader.GetModel3D("SmallTeapot.obj", new Vector3D(-1.5f, 1.5f, 1.5f), Color.GREEN));
         //scene02.addObject(OBJReader.GetModel3D("SmallTeapot.obj", new Vector3D(1.5f, 1.5f, 1.5f), Color.BLUE));
@@ -131,16 +131,26 @@ public class Raytracer {
 
                             Color diffuse = new Color(clamp(objColors[0], 0, 1), clamp(objColors[1], 0, 1), clamp(objColors[2], 0, 1));
                             pixelColor = addColor(pixelColor, diffuse);
+
+                            Vector3D halfAngle = Vector3D.scalarMultiplication((Vector3D.substract(scene.getCamera().getPosition(), light.getPosition())), 1/Vector3D.magnitude(Vector3D.substract(scene.getCamera().getPosition(), light.getPosition())));
+                            //aqui hay error
+                            //double specular = (Math.pow(Vector3D.dotProduct(otherIntersection.getNormal(), halfAngle),2))*pixelColor.getRGB();
+                            //Color sp = new Color((int) specular);
+                            //pixelColor  = addColor(pixelColor, sp);
                         }
-                        else{
+                        /*else{
                             shadow = true;
-                        }
+                        }*/
+
+
+
 
                     }
                 }
 
                 Color ambientColor = new Color(0.05f, 0.05f, 0.05f);
                 pixelColor = addColor(pixelColor, ambientColor);
+
 
                 /*if(shadow){
                     pixelColor = Color.BLUE;
