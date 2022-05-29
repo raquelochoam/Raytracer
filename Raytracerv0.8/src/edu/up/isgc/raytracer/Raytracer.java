@@ -106,6 +106,7 @@ public class Raytracer {
 
                 Color pixelColor = Color.BLACK;
                 boolean shadow = false;
+                double specular;
 
                 if (closestIntersection != null) {
                     Color objColor = closestIntersection.getObject().getColor();
@@ -132,11 +133,14 @@ public class Raytracer {
                             Color diffuse = new Color(clamp(objColors[0], 0, 1), clamp(objColors[1], 0, 1), clamp(objColors[2], 0, 1));
                             pixelColor = addColor(pixelColor, diffuse);
 
-                            Vector3D halfAngle = Vector3D.scalarMultiplication((Vector3D.substract(scene.getCamera().getPosition(), light.getPosition())), 1/Vector3D.magnitude(Vector3D.substract(scene.getCamera().getPosition(), light.getPosition())));
-                            //aqui hay error
-                            //double specular = (Math.pow(Vector3D.dotProduct(otherIntersection.getNormal(), halfAngle),2))*pixelColor.getRGB();
-                            //Color sp = new Color((int) specular);
-                            //pixelColor  = addColor(pixelColor, sp);
+
+                            //caculate specular
+                            Vector3D cameraPos = Vector3D.normalize(scene.getCamera().getPosition());
+                            Vector3D lightPos = Vector3D.normalize(light.getPosition());
+                            Vector3D halfAngle = Vector3D.normalize(Vector3D.scalarMultiplication((Vector3D.substract(cameraPos, lightPos)), 1/Vector3D.magnitude(Vector3D.substract(cameraPos,lightPos))));
+                            double shininess = 30;
+                            specular = (Math.pow(Vector3D.dotProduct(closestIntersection.getNormal(), halfAngle),shininess));
+
                         }
                         /*else{
                             shadow = true;
@@ -150,7 +154,6 @@ public class Raytracer {
 
                 Color ambientColor = new Color(0.05f, 0.05f, 0.05f);
                 pixelColor = addColor(pixelColor, ambientColor);
-
 
                 /*if(shadow){
                     pixelColor = Color.BLUE;
