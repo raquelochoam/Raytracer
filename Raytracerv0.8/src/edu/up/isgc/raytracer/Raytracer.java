@@ -44,10 +44,7 @@ public class Raytracer {
         scene02.addObject(new Sphere(new Vector3D(2f, 1f, 1.5f), 0.4f, Color.WHITE));
         scene02.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(-3f, 2f, 2f), Color.WHITE));
         scene02.addObject(OBJReader.GetModel3D("SmallTeapot.obj", new Vector3D(0f, -1.73f, 1.5f), Color.MAGENTA));
-
-        //scene02.addObject(OBJReader.GetModel3D("SmallTeapot.obj", new Vector3D(-1.5f, 1.5f, 1.5f), Color.GREEN));
-        //scene02.addObject(OBJReader.GetModel3D("SmallTeapot.obj", new Vector3D(1.5f, 1.5f, 1.5f), Color.BLUE));
-        //scene02.addObject(OBJReader.GetModel3D("SmallTeapot.obj", new Vector3D(1.5f, -2.5f, 1.5f), Color.YELLOW));
+        //scene02.addObject(OBJReader.GetModel3D("LotusFlower.obj", new Vector3D(0,0,1.5),Color.MAGENTA));
 
         //scene02.addObject(OBJReader.GetModel3D("Ring.obj", new Vector3D(2f, -1.0f, 1.5f), Color.BLUE));
 
@@ -65,7 +62,7 @@ public class Raytracer {
                 Color.WHITE));
         //objects
         scene01.addObject(new Sphere(new Vector3D(0f, 0f, 1.5f), 0.9f, Color.WHITE));
-        //scene01.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(-1.5f, -.5f, 1f), Color.WHITE));
+        scene01.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(-1.5f, -.5f, 1f), Color.WHITE));
 
         BufferedImage image = raytrace(scene02);
         File outputImage = new File("image.png");
@@ -125,7 +122,7 @@ public class Raytracer {
                             Vector3D cameraPos = Vector3D.normalize(scene.getCamera().getPosition());
                             Vector3D lightPos = Vector3D.normalize(light.getPosition());
                             Vector3D halfAngle = Vector3D.normalize(Vector3D.scalarMultiplication((Vector3D.add(cameraPos, lightPos)), 1/Vector3D.magnitude(Vector3D.add(cameraPos,lightPos))));
-                            double shininess = 40;
+                            double shininess = 45;
                             specular = (Math.pow(Vector3D.dotProduct(closestIntersection.getNormal(), halfAngle),shininess));
 
                             double ambient = 0.05;
