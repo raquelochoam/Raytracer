@@ -25,6 +25,7 @@ public class Raytracer {
         System.out.println(new Date());
 
         Material material1 = new Material(45, false, false);
+        Material material2 = new Material(45,true, false);
 
         Scene scene02 = new Scene();
         scene02.setCamera(new Camera(new Vector3D(0, .5, -8), 160, 160, 800, 800, 8.2f, 50f));
@@ -35,7 +36,7 @@ public class Raytracer {
                 new Triangle[]{
                         new Triangle(new Vector3D(-600,-2,0), new Vector3D(600, -2, 0), new Vector3D(600, -2, 600)),
                         new Triangle(new Vector3D(-600,-2,0), new Vector3D(600, -2, 600), new Vector3D(-600, -2, -600)),},
-                Color.WHITE, material1));
+                Color.WHITE, material2));
         //pared de fondo
         scene02.addObject(new Model3D(new Vector3D(0, 0, 0),
                 new Triangle[]{
@@ -85,17 +86,17 @@ public class Raytracer {
         //scene01.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(-1.5f, -.5f, 1f), Color.WHITE));
 
         Scene scene03 = new Scene();
-        scene03.setCamera(new Camera(new Vector3D(0, .2f, -8), 160, 160, 800, 800, 8.2f, 50f));
+        scene03.setCamera(new Camera(new Vector3D(0, 0.5f, -8), 160, 160, 800, 800, 8.2f, 50f));
         //lights
-        scene03.addLight(new PointLight(new Vector3D(0f, 2f, 0f), Color.WHITE, 1f));
+        scene03.addLight(new PointLight(new Vector3D(0f, 4f, 0f), Color.WHITE, 1.5f));
         //piso
         scene03.addObject(new Model3D(new Vector3D(0, 0, 0),
                 new Triangle[]{
                         new Triangle(new Vector3D(-600,-2,0), new Vector3D(600, -2, 0), new Vector3D(600, -2, 600)),
                         new Triangle(new Vector3D(-600,-2,0), new Vector3D(600, -2, 600), new Vector3D(-600, -2, -600)),},
-                Color.WHITE, material1));
+                Color.WHITE, material2));
         //objects
-        scene03.addObject(new Sphere(new Vector3D(0f, -.8f, 1.5f), 0.9f, new Color(193,38,97), material1));
+        scene03.addObject(new Sphere(new Vector3D(0f, -1f, 5f), 0.7f, new Color(193,38,97), material1));
 
 
         BufferedImage image = raytrace(scene03);
@@ -147,7 +148,18 @@ public class Raytracer {
 
                             if(closestIntersection.getObject().getMaterial().isReflection()){
                                 //calculate reflection
+                                Vector3D interscNormal = closestIntersection.getNormal();
+                                Vector3D cameraInters = Vector3D.substract(closestIntersection.getPosition(), scene.getCamera().getPosition());
+                                Vector3D reflect= reflect(interscNormal,cameraInters);
+
+                                Intersection reflectedIntersection = raycast(new Ray(closestIntersection.getPosition(), reflect),objects, closestIntersection.getObject(), null);
+
+                                if(reflectedIntersection != null){
+                                    closestIntersection = reflectedIntersection;
+                                    objColor = closestIntersection.getObject().getColor();
+                                }
                             }
+
                             if(closestIntersection.getObject().getMaterial().isReflactive()){
                                 //caculate reflactive
                             }
@@ -164,7 +176,7 @@ public class Raytracer {
                             Vector3D cameraPos = Vector3D.normalize(scene.getCamera().getPosition());
                             Vector3D lightPos = Vector3D.normalize(light.getPosition());
                             Vector3D halfAngle = Vector3D.normalize(Vector3D.scalarMultiplication((Vector3D.add(cameraPos, lightPos)), 1/Vector3D.magnitude(Vector3D.add(cameraPos,lightPos))));
-                            double shininess = 45;
+                            double shininess = closestIntersection.getObject().getMaterial().getShinnines();
                             specular = (Math.pow(Vector3D.dotProduct(closestIntersection.getNormal(), halfAngle),shininess));
 
                             double ambient = 0.05;
@@ -178,16 +190,13 @@ public class Raytracer {
                         }
                         /*else{
                             shadow = true;
+                            pixelColor = Color.BLACK;
                         }*/
-
-
-
-
                     }
                 }
 
-                /*Color ambientColor = new Color(0.05f, 0.05f, 0.05f);
-                pixelColor = addColor(pixelColor, ambientColor);*/
+                Color ambientColor = new Color(0.05f, 0.05f, 0.05f);
+                pixelColor = addColor(pixelColor, ambientColor);
 
                 /*if(shadow){
                     pixelColor = Color.BLUE;
@@ -197,6 +206,15 @@ public class Raytracer {
         }
 
         return image;
+    }
+
+    public static Vector3D reflect(Vector3D interscNormal, Vector3D interscCamera){
+        Vector3D reflect;
+        double nDotc= Vector3D.dotProduct(interscNormal,interscCamera);
+        Vector3D i2 = Vector3D.scalarMultiplication(interscNormal,-2);
+        Vector3D iDotnDotL = Vector3D.scalarMultiplication(i2,nDotc);
+        reflect = Vector3D.add(iDotnDotL, interscCamera);
+        return reflect;
     }
 
     public static float clamp(float value, float min, float max) {
