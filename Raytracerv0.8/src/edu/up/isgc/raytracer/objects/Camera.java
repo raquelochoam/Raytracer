@@ -7,6 +7,7 @@ package edu.up.isgc.raytracer.objects;
 import edu.up.isgc.raytracer.Intersection;
 import edu.up.isgc.raytracer.Ray;
 import edu.up.isgc.raytracer.Vector3D;
+import edu.up.isgc.raytracer.tools.Material;
 
 import java.awt.*;
 

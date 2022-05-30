@@ -20,7 +20,7 @@ import java.util.Map;
 
 public abstract class OBJReader {
 
-    public static Model3D GetModel3D(String path, Vector3D origin, Color color) {
+    public static Model3D GetModel3D(String path, Vector3D origin, Color color, Material material) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
 
@@ -161,7 +161,7 @@ public abstract class OBJReader {
                 }
             }
 
-            return new Model3D(origin, triangles.toArray(new Triangle[triangles.size()]), color);
+            return new Model3D(origin, triangles.toArray(new Triangle[triangles.size()]), color, material);
         } catch (FileNotFoundException ex) {
             System.err.println("File not found");
         } catch (IOException ex) {
