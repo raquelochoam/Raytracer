@@ -51,7 +51,7 @@ public class Raytracer {
 
         //scene02.addObject(OBJReader.GetModel3D("Ring.obj", new Vector3D(2f, -1.0f, 1.5f), Color.BLUE));
 
-        /*Scene scene01 = new Scene();
+        Scene scene01 = new Scene();
         //camara
         scene01.setCamera(new Camera(new Vector3D(0, .5f, -8), 160, 160, 800, 800, 8.2f, 50f));
         //lights
@@ -63,15 +63,9 @@ public class Raytracer {
                         new Triangle(new Vector3D(-600,-2,0), new Vector3D(600, -2, 0), new Vector3D(600, -2, 600)),
                         new Triangle(new Vector3D(-600,-2,0), new Vector3D(600, -2, 600), new Vector3D(-600, -2, -600)),},
                 Color.WHITE));
-        //pared de enfrente
-        scene01.addObject(new Model3D(new Vector3D(0, 0, 0),
-                new Triangle[]{
-                        new Triangle(new Vector3D(-400,-200,4), new Vector3D(400, -200, 4), new Vector3D(400, 200, 4)),
-                        new Triangle(new Vector3D(-400,-200,4), new Vector3D(400, 200, 4), new Vector3D(-400, 200, 4)),},
-                Color.WHITE));
         //objects
-        //scene01.addObject(new Sphere(new Vector3D(0f, 0f, 1.5f), 0.9f, Color.WHITE));
-        scene01.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(-1.5f, -.5f, 1f), Color.WHITE));*/
+        scene01.addObject(new Sphere(new Vector3D(0f, 0f, 1.5f), 0.9f, Color.WHITE));
+        //scene01.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(-1.5f, -.5f, 1f), Color.WHITE));
 
         BufferedImage image = raytrace(scene02);
         File outputImage = new File("image.png");
@@ -126,21 +120,22 @@ public class Raytracer {
 
                             float[] lightColors = new float[]{lightColor.getRed() / 255.0f, lightColor.getGreen() / 255.0f, lightColor.getBlue() / 255.0f};
                             float[] objColors = new float[]{objColor.getRed() / 255.0f, objColor.getGreen() / 255.0f, objColor.getBlue() / 255.0f};
-                            for (int colorIndex = 0; colorIndex < objColors.length; colorIndex++) {
-                                objColors[colorIndex] *= li * lightColors[colorIndex];
-                            }
-
-                            Color diffuse = new Color(clamp(objColors[0], 0, 1), clamp(objColors[1], 0, 1), clamp(objColors[2], 0, 1));
-                            pixelColor = addColor(pixelColor, diffuse);
-
 
                             //caculate specular
                             Vector3D cameraPos = Vector3D.normalize(scene.getCamera().getPosition());
                             Vector3D lightPos = Vector3D.normalize(light.getPosition());
-                            Vector3D halfAngle = Vector3D.normalize(Vector3D.scalarMultiplication((Vector3D.substract(cameraPos, lightPos)), 1/Vector3D.magnitude(Vector3D.substract(cameraPos,lightPos))));
-                            double shininess = 30;
+                            Vector3D halfAngle = Vector3D.normalize(Vector3D.scalarMultiplication((Vector3D.add(cameraPos, lightPos)), 1/Vector3D.magnitude(Vector3D.add(cameraPos,lightPos))));
+                            double shininess = 40;
                             specular = (Math.pow(Vector3D.dotProduct(closestIntersection.getNormal(), halfAngle),shininess));
 
+                            double ambient = 0.05;
+
+                            for (int colorIndex = 0; colorIndex < objColors.length; colorIndex++) {
+                                objColors[colorIndex] *= (li+specular+ambient) * lightColors[colorIndex];
+                            }
+
+                            Color diffuse = new Color(clamp(objColors[0], 0, 1), clamp(objColors[1], 0, 1), clamp(objColors[2], 0, 1));
+                            pixelColor = addColor(pixelColor, diffuse);
                         }
                         /*else{
                             shadow = true;
@@ -152,8 +147,8 @@ public class Raytracer {
                     }
                 }
 
-                Color ambientColor = new Color(0.05f, 0.05f, 0.05f);
-                pixelColor = addColor(pixelColor, ambientColor);
+                /*Color ambientColor = new Color(0.05f, 0.05f, 0.05f);
+                pixelColor = addColor(pixelColor, ambientColor);*/
 
                 /*if(shadow){
                     pixelColor = Color.BLUE;
