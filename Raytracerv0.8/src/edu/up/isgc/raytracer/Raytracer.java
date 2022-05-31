@@ -26,6 +26,8 @@ public class Raytracer {
 
         Material material1 = new Material(45, false, false);
         Material material2 = new Material(45,true, false);
+        Material material3 = new Material(45,false, true);
+
 
         Scene scene02 = new Scene();
         scene02.setCamera(new Camera(new Vector3D(0, .5, -8), 160, 160, 800, 800, 8.2f, 50f));
@@ -96,8 +98,9 @@ public class Raytracer {
                         new Triangle(new Vector3D(-600,-2,0), new Vector3D(600, -2, 600), new Vector3D(-600, -2, -600)),},
                 Color.WHITE, material2));
         //objects
-        scene03.addObject(new Sphere(new Vector3D(-2.5f, -1.02f, 4.5f), 0.7f, new Color(193,38,97), material1));
-        //scene03.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(-2.5f, -1.9f, 1.9f), Color.YELLOW, material1));
+        //scene03.addObject(new Sphere(new Vector3D(-2.5f, 2f, 4.5f), 0.7f, new Color(193,38,97), material1));
+        scene03.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(-1.5f, -1.6f, 1.9f), Color.WHITE, material3));
+        //scene03.addObject(new Sphere(new Vector3D(-1f, 2f, 1.9f), 0.6f, Color.WHITE, material3));
         scene03.addObject(new Sphere(new Vector3D(2.3f, 0f, 1.5f), 0.7f, Color.WHITE, material2));
         scene03.addObject(OBJReader.GetModel3D("SmallTeapot.obj", new Vector3D(0f, -1.73f, 3f), Color.MAGENTA, material1));
 
@@ -152,18 +155,19 @@ public class Raytracer {
                             if(closestIntersection.getObject().getMaterial().isReflection()){
                                 //calculate reflection
                                 closestIntersection = reflection(closestIntersection, scene,0);
-                                objColor = closestIntersection.getObject().getColor();
                             }
 
                             if(closestIntersection.getObject().getMaterial().isReflactive()){
                                 //caculate reflactive
-
+                                closestIntersection = refraction(closestIntersection,scene,ray);
                             }
 
                             double nDotL = light.getNDotL(closestIntersection);
                             double intensity = light.getIntensity() * nDotL;
                             double li = intensity/ Math.pow(Vector3D.distancePoints(closestIntersection.getPosition(), light.getPosition()), 2);
                             Color lightColor = light.getColor();
+                            objColor = closestIntersection.getObject().getColor();
+
 
                             float[] lightColors = new float[]{lightColor.getRed() / 255.0f, lightColor.getGreen() / 255.0f, lightColor.getBlue() / 255.0f};
                             float[] objColors = new float[]{objColor.getRed() / 255.0f, objColor.getGreen() / 255.0f, objColor.getBlue() / 255.0f};
@@ -242,6 +246,26 @@ public class Raytracer {
     }
 
     public static Intersection refraction(Intersection closestIntersection, Scene scene, Ray ray){
+        Vector3D nRefr = Vector3D.normalize(ray.getDirection());
+        double nDotR = Vector3D.dotProduct(closestIntersection.getNormal(),nRefr);
+        double indexRefr = 1.0;
+
+        double c = Math.sqrt(1-Math.pow(indexRefr,2)*(1-Math.pow(nDotR,2)));
+
+        Vector3D refractionV = Vector3D.add(Vector3D.scalarMultiplication(nRefr,indexRefr), Vector3D.scalarMultiplication(closestIntersection.getNormal(), (indexRefr*nDotR)-c));
+
+        for (Object3D object:
+                scene.getObjects()) {
+            if(object != closestIntersection.getObject()){
+                Intersection refracIntersc = raycast(new Ray(closestIntersection.getPosition(), refractionV), scene.getObjects(), closestIntersection.getObject(), null);
+                if(refracIntersc == null){
+                    return closestIntersection;
+                }
+                else{
+                    return refraction(refracIntersc,scene,ray);
+                }
+            }
+        }
 
         return  closestIntersection;
     }
