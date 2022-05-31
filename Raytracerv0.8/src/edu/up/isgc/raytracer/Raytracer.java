@@ -86,9 +86,9 @@ public class Raytracer {
         //scene01.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(-1.5f, -.5f, 1f), Color.WHITE));
 
         Scene scene03 = new Scene();
-        scene03.setCamera(new Camera(new Vector3D(0, 0.5f, -8), 160, 160, 800, 800, 8.2f, 50f));
+        scene03.setCamera(new Camera(new Vector3D(0f, 0.5f, -8), 160, 160, 800, 800, 8.2f, 50f));
         //lights
-        scene03.addLight(new PointLight(new Vector3D(0f, 4f, 0f), Color.WHITE, 1.5f));
+        scene03.addLight(new PointLight(new Vector3D(-3f, 4f, 0f), Color.WHITE, 1.5f));
         //piso
         scene03.addObject(new Model3D(new Vector3D(0, 0, 0),
                 new Triangle[]{
@@ -96,7 +96,10 @@ public class Raytracer {
                         new Triangle(new Vector3D(-600,-2,0), new Vector3D(600, -2, 600), new Vector3D(-600, -2, -600)),},
                 Color.WHITE, material2));
         //objects
-        scene03.addObject(new Sphere(new Vector3D(0f, -1f, 5f), 0.7f, new Color(193,38,97), material1));
+        scene03.addObject(new Sphere(new Vector3D(-2.5f, -1.02f, 4.5f), 0.7f, new Color(193,38,97), material1));
+        //scene03.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(-2.5f, -1.9f, 1.9f), Color.YELLOW, material1));
+        scene03.addObject(new Sphere(new Vector3D(2.3f, 0f, 1.5f), 0.7f, Color.WHITE, material2));
+        scene03.addObject(OBJReader.GetModel3D("SmallTeapot.obj", new Vector3D(0f, -1.73f, 3f), Color.MAGENTA, material1));
 
 
         BufferedImage image = raytrace(scene03);
@@ -148,20 +151,13 @@ public class Raytracer {
 
                             if(closestIntersection.getObject().getMaterial().isReflection()){
                                 //calculate reflection
-                                Vector3D interscNormal = closestIntersection.getNormal();
-                                Vector3D cameraInters = Vector3D.substract(closestIntersection.getPosition(), scene.getCamera().getPosition());
-                                Vector3D reflect= reflect(interscNormal,cameraInters);
-
-                                Intersection reflectedIntersection = raycast(new Ray(closestIntersection.getPosition(), reflect),objects, closestIntersection.getObject(), null);
-
-                                if(reflectedIntersection != null){
-                                    closestIntersection = reflectedIntersection;
-                                    objColor = closestIntersection.getObject().getColor();
-                                }
+                                closestIntersection = reflection(closestIntersection, scene,0);
+                                objColor = closestIntersection.getObject().getColor();
                             }
 
                             if(closestIntersection.getObject().getMaterial().isReflactive()){
                                 //caculate reflactive
+
                             }
 
                             double nDotL = light.getNDotL(closestIntersection);
@@ -208,13 +204,46 @@ public class Raytracer {
         return image;
     }
 
-    public static Vector3D reflect(Vector3D interscNormal, Vector3D interscCamera){
+    public static Vector3D reflectV3D(Vector3D interscNormal, Vector3D interscCamera){
         Vector3D reflect;
         double nDotc= Vector3D.dotProduct(interscNormal,interscCamera);
         Vector3D i2 = Vector3D.scalarMultiplication(interscNormal,-2);
         Vector3D iDotnDotL = Vector3D.scalarMultiplication(i2,nDotc);
         reflect = Vector3D.add(iDotnDotL, interscCamera);
         return reflect;
+    }
+
+    public static Intersection reflection(Intersection closestIntersection, Scene scene, int repeats ){
+        if(repeats <= 2){
+            Vector3D interscNormal = closestIntersection.getNormal();
+            Vector3D cameraInters = Vector3D.substract(closestIntersection.getPosition(), scene.getCamera().getPosition());
+            Vector3D reflect= reflectV3D(interscNormal,cameraInters);
+
+            for (Object3D object:
+                    scene.getObjects()) {
+                if(object != closestIntersection.getObject()){
+                    Vector3D positionRay = Vector3D.add(closestIntersection.getPosition(), Vector3D.scalarMultiplication(closestIntersection.getNormal(),0.01));
+                    Intersection reflectedIntersc = raycast(new Ray(positionRay, reflect), scene.getObjects(), closestIntersection.getObject(), null);
+                    if(reflectedIntersc == null){
+                        return closestIntersection;
+                    }
+                    else{
+                        if(reflectedIntersc.getObject() == object){
+                            return closestIntersection;
+                        }
+                        else{
+                            return reflection(reflectedIntersc, scene,repeats+1);
+                        }
+                    }
+                }
+            }
+        }
+        return closestIntersection;
+    }
+
+    public static Intersection refraction(Intersection closestIntersection, Scene scene, Ray ray){
+
+        return  closestIntersection;
     }
 
     public static float clamp(float value, float min, float max) {
