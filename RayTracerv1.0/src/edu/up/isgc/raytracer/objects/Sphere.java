@@ -10,10 +10,19 @@ import edu.up.isgc.raytracer.Vector3D;
 import edu.up.isgc.raytracer.tools.Material;
 
 import java.awt.*;
-
+/**
+ * @author Jafet Rodríguez
+ */
 public class Sphere extends Object3D {
     private double radius;
 
+    /**
+     * Construtor of spheres
+     * @param position
+     * @param radius
+     * @param color
+     * @param material
+     */
     public Sphere(Vector3D position, double radius, Color color, Material material) {
         super(position, color, material);
         setRadius(radius);
@@ -27,6 +36,11 @@ public class Sphere extends Object3D {
         this.radius = radius;
     }
 
+    /**
+     *
+     * @param ray
+     * @return the intersection ray to sphere
+     */
     @Override
     public Intersection getIntersection(Ray ray) {
         Vector3D L = Vector3D.substract(ray.getOrigin(), getPosition());

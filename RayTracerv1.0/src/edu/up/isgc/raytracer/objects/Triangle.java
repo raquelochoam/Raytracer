@@ -9,6 +9,9 @@ import edu.up.isgc.raytracer.Intersection;
 import edu.up.isgc.raytracer.Ray;
 import edu.up.isgc.raytracer.Vector3D;
 
+/**
+ * @author Jafet Rodríguez
+ */
 public class Triangle implements IIntersectable {
 
     public static final double EPSILON = 0.0000001;
@@ -16,11 +19,26 @@ public class Triangle implements IIntersectable {
     private Vector3D[] vertices;
     private Vector3D[] normals;
 
+    /**
+     * Constructor Triangle
+     * @param v1
+     * @param v2
+     * @param v3
+     */
     public Triangle(Vector3D v1, Vector3D v2, Vector3D v3) {
         setVertices(v1, v2, v3);
         setNormals(null);
     }
 
+    /**
+     * Constructor triangle
+     * @param v1
+     * @param v2
+     * @param v3
+     * @param n1
+     * @param n2
+     * @param n3
+     */
     public Triangle(Vector3D v1, Vector3D v2, Vector3D v3, Vector3D n1, Vector3D n2, Vector3D n3) {
         this(v1, v2, v3);
         setNormals(n1, n2, n3);
@@ -87,6 +105,11 @@ public class Triangle implements IIntersectable {
         setNormals(normals);
     }
 
+    /**
+     *
+     * @param ray
+     * @return the intersection ray to triangle
+     */
     @Override
     public Intersection getIntersection(Ray ray) {
         Intersection intersection = new Intersection(null, -1, null, null);

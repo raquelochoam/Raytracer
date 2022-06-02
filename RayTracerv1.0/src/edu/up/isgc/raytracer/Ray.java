@@ -3,12 +3,20 @@
  * All Rights Reserved.
  */
 package edu.up.isgc.raytracer;
-
+/**
+ * @author Jafet Rodriguez
+ *
+ */
 public class Ray {
 
     private Vector3D origin;
     private Vector3D direction;
 
+    /**
+     * Constructor Ray
+     * @param origin
+     * @param direction
+     */
     public Ray(Vector3D origin, Vector3D direction) {
         setOrigin(origin);
         setDirection(direction);

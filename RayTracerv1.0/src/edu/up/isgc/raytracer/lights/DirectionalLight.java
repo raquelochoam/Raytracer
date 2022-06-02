@@ -9,10 +9,18 @@ import edu.up.isgc.raytracer.Ray;
 import edu.up.isgc.raytracer.Vector3D;
 
 import java.awt.*;
-
+/**
+ * @author Jafet Rodríguez
+ */
 public class DirectionalLight extends Light{
     private Vector3D direction;
 
+    /**
+     * Constructor DirectionalLight
+     * @param direction
+     * @param color any color rgb
+     * @param intensity be careful
+     */
     public DirectionalLight(Vector3D direction, Color color, double intensity) {
         super(Vector3D.ZERO(), color, intensity);
         setDirection(Vector3D.normalize(direction));

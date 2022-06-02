@@ -18,6 +18,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * @author Jafet Rodriguez
+ *
+ */
 public abstract class OBJReader {
 
     public static Model3D GetModel3D(String path, Vector3D origin, Color color, Material material) {

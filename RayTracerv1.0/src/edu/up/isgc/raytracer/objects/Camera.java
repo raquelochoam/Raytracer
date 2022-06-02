@@ -21,6 +21,16 @@ public class Camera extends Object3D {
     private int[] resolution;
     private float[] nearFarPlanes = new float[2];
 
+    /**
+     * Construtor of Camera
+     * @param position
+     * @param fieldOfViewHorizontal careful
+     * @param fieldOfViewVertical  careful
+     * @param widthResolution size of the image
+     * @param heightResolution size of the image
+     * @param nearPlane
+     * @param farPlane
+     */
     public Camera(Vector3D position, float fieldOfViewHorizontal, float fieldOfViewVertical,
                   int widthResolution, int heightResolution,
                   float nearPlane, float farPlane) {
@@ -87,6 +97,10 @@ public class Camera extends Object3D {
         this.resolution = resolution;
     }
 
+    /**
+     * Caculate the positions to ray
+     * @return positions
+     */
     public Vector3D[][] calculatePositionsToRay(){
         float angleMaxX = 90 - (getFieldOfViewHorizontal() / 2f);
         float radiusMaxX = getDefaultZ() / (float)Math.cos(Math.toRadians(angleMaxX));

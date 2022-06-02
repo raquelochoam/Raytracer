@@ -16,6 +16,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @author Jafet Rodríguez
+ */
 public class Model3D extends Object3D{
     public List<Triangle> triangles;
 
@@ -23,11 +26,22 @@ public class Model3D extends Object3D{
         return triangles;
     }
 
+    /**
+     * Constructor Model3D
+     * @param position
+     * @param triangles
+     * @param color
+     * @param material
+     */
     public Model3D(Vector3D position, Triangle[] triangles, Color color, Material material){
         super(position, color, material);
         setTriangles(triangles);
     }
 
+    /**
+     * Set Triangles in a Model3D
+     * @param triangles
+     */
     public void setTriangles(Triangle[] triangles) {
         Vector3D position = getPosition();
         Set<Vector3D> uniqueVertices = new HashSet<Vector3D>();

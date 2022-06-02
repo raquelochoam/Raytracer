@@ -1,11 +1,11 @@
 /**
  * [1968] - [2022] Centros Culturales de Mexico A.C / Universidad Panamericana
  * All Rights Reserved.
+ * @autors Jafet Rodriguez and Raquel Ochoa
  */
 package edu.up.isgc.raytracer;
 
 
-import edu.up.isgc.raytracer.lights.DirectionalLight;
 import edu.up.isgc.raytracer.lights.Light;
 import edu.up.isgc.raytracer.lights.PointLight;
 import edu.up.isgc.raytracer.objects.*;
@@ -19,46 +19,128 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Main class
+ */
 public class Raytracer {
 
     public static void main(String[] args) {
         System.out.println(new Date());
+
+        //Materials
         Material material1 = new Material(45, false, false);
         Material material2 = new Material(45,true, false);
-        Material material3 = new Material(45,false, true);
+        Material material3 = new Material(45,false,true);
+        Material material4 = new Material(30,false, false);
+        Material material5 = new Material(15,false, false);
+        Material material6 = new Material(40,false, false);
 
-        Scene scene04 = new Scene();
-        scene04.setCamera(new Camera(new Vector3D(0, .5f, -7), 144f, 160f, 400, 225, 0.5f, 50f));
+        //Scenes
+        Scene scene01 = new Scene();
+        //camara
+        scene01.setCamera(new Camera(new Vector3D(0, .5f, -7), 144f, 160f, 1920, 1080, 0.5f, 50f));
         //lights
-        scene04.addLight(new PointLight(new Vector3D(0f, 3f, -4f), Color.WHITE, 1.2));
-        scene04.addLight(new PointLight(new Vector3D(3f, 2f, -5f), Color.BLUE, 0.8));
-        //piso
-        scene04.addObject(new Model3D(new Vector3D(0, 0, 0),
+        scene01.addLight(new PointLight(new Vector3D(0f, 3f, -4f), Color.WHITE, 1.2));
+        scene01.addLight(new PointLight(new Vector3D(3f, 2f, -5f), Color.BLUE, 0.8));
+        //floor
+        scene01.addObject(new Model3D(new Vector3D(0, 0, 0),
                 new Triangle[]{
                         new Triangle(new Vector3D(-600,0,-600), new Vector3D(600, 0, -600), new Vector3D(600, 0, 600)),
                         new Triangle(new Vector3D(-600,0,-600), new Vector3D(600, 0, 600), new Vector3D(-600, 0, 600)),},
                 Color.WHITE, material2));
-        //pared de fondo
-        scene04.addObject(new Model3D(new Vector3D(0, 0, 0),
+        //back wall
+        scene01.addObject(new Model3D(new Vector3D(0, 0, 0),
                 new Triangle[]{
                         new Triangle(new Vector3D(-400,-200,4), new Vector3D(400, -200, 4), new Vector3D(400, 200, 4)),
                         new Triangle(new Vector3D(-400,-200,4), new Vector3D(400, 200, 4), new Vector3D(-400, 200, 4)),},
                 Color.WHITE, material1));
-        scene04.addObject(OBJReader.GetModel3D("SmallTeapot.obj",new Vector3D(2.3f, 0,-1.25f), Color.MAGENTA, material1));
-        //scene04.addObject(new Sphere(new Vector3D(0f, 2f, 1.5f), 0.9f, Color.WHITE, material1));
+        //objects
+        scene01.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(3f, 2f, .5f), new Color(230,230,120), material1));
+        scene01.addObject(OBJReader.GetModel3D("Ring.obj",new Vector3D(-1.5f, .1f,1f), Color.WHITE, material2));
+        scene01.addObject(OBJReader.GetModel3D("lotusx90.obj",new Vector3D(1.5f, 0,1.5f), Color.MAGENTA, material1));
+        scene01.addObject(OBJReader.GetModel3D("lotusx90.obj",new Vector3D(-2.5f, 0,-1.7f), Color.MAGENTA, material1));
+        scene01.addObject(OBJReader.GetModel3D("lotusx90.obj",new Vector3D(2.3f, 0,-1.25f), Color.MAGENTA, material1));
+
+        Scene scene02 = new Scene();
+        scene02.setCamera(new Camera(new Vector3D(0, 1f, -7), 144f, 160f, 1920, 1080, 0.5f, 50f));
+        //lights
+        scene02.addLight(new PointLight(new Vector3D(3f, 4f, -0.1f), Color.WHITE, 1.2));
+        scene02.addLight(new PointLight(new Vector3D(0f, 4f, -1f), new Color(255,255,245), 0.8));
+        //floor
+        scene02.addObject(new Model3D(new Vector3D(0, 0, 0),
+                new Triangle[]{
+                        new Triangle(new Vector3D(-600,0,-600), new Vector3D(600, 0, -600), new Vector3D(600, 0, 600)),
+                        new Triangle(new Vector3D(-600,0,-600), new Vector3D(600, 0, 600), new Vector3D(-600, 0, 600)),},
+                Color.WHITE, material1));
+        //back wall
+        scene02.addObject(new Model3D(new Vector3D(0, 0, 0),
+                new Triangle[]{
+                        new Triangle(new Vector3D(-400,-200,5), new Vector3D(400, -200, 5), new Vector3D(400, 200, 5)),
+                        new Triangle(new Vector3D(-400,-200,5), new Vector3D(400, 200, 5), new Vector3D(-400, 200, 5)),},
+                new Color(222,240,255), material1));
+        //OBJECTS
+        scene02.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(2f, .7f, 2.5f), Color.WHITE, material2));
+        scene02.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(2f, 2f, 2.5f), Color.WHITE, material2));
+        scene02.addObject(OBJReader.GetModel3D("Ring.obj", new Vector3D(2f, .3f, 2.5f), Color.WHITE, material2));
+        scene02.addObject(OBJReader.GetModel3D("LotusFlowerfrente.obj", new Vector3D(3,3,-0.3), new Color(255,216,72), material1));
+        scene02.addObject(OBJReader.GetModel3D("LotusFlowerBack.obj", new Vector3D(3,3,1), new Color(255,216,72), material1));
+
+        scene02.addObject(OBJReader.GetModel3D("LotusFlowerfrente.obj", new Vector3D(-5,2.5,4), new Color(149,177,144), material5));
+        scene02.addObject(OBJReader.GetModel3D("LotusFlowerfrente.obj", new Vector3D(-3,4,4), new Color(255,189,209), material5));
+        scene02.addObject(OBJReader.GetModel3D("LotusFlowerfrente.obj", new Vector3D(-1,2.5,4), new Color(255,160,64), material5));
+        scene02.addObject(OBJReader.GetModel3D("LotusFlowerfrente.obj", new Vector3D(-4,.8,4), new Color(255,64,64), material5));
+        scene02.addObject(OBJReader.GetModel3D("LotusFlowerfrente.obj", new Vector3D(-2,.8,4), new Color(30,144,255), material5));
+
+        scene02.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(-2f, .8f, 2.5f), Color.WHITE, material3));
+        scene02.addObject(OBJReader.GetModel3D("Cube.obj", new Vector3D(-3f, 4.1f, 2.5f), Color.WHITE, material3));
 
 
-        BufferedImage image = raytrace(scene04);
+        Scene scene03 = new Scene();
+        scene03.setCamera(new Camera(new Vector3D(0, .8, -9), 144f, 160f, 400,225 , .5f, 50f));
+        //scene03.addLight(new PointLight(new Vector3D(0f, -0.3f, 600f), Color.ORANGE, 1.5));
+        //lights
+        scene03.addLight(new PointLight(new Vector3D(-2f, 3f, 0f), Color.ORANGE, 1.1));
+        scene03.addLight(new PointLight(new Vector3D(2f, 3f, 0f), Color.RED, 1.1));
+        scene03.addLight(new PointLight(new Vector3D(0f, 4f, 0f), Color.RED, 0.4));
+        //floor
+        scene03.addObject(new Model3D(new Vector3D(0, 0, 0),
+                new Triangle[]{
+                        new Triangle(new Vector3D(-600,0,-600), new Vector3D(600, 0, -600), new Vector3D(600, 0, 600)),
+                        new Triangle(new Vector3D(-600,0,-600), new Vector3D(600, 0, 600), new Vector3D(-600, 0, 600)),},
+                Color.WHITE, material2));
+        //back wall
+        scene03.addObject(new Model3D(new Vector3D(0, 0, 0),
+                new Triangle[]{
+                        new Triangle(new Vector3D(-400,-200,5), new Vector3D(400, -200, 5), new Vector3D(400, 200, 5)),
+                        new Triangle(new Vector3D(-400,-200,5), new Vector3D(400, 200, 5), new Vector3D(-400, 200, 5)),},
+                Color.WHITE, material1));
+        //objects
+        scene03.addObject(OBJReader.GetModel3D("LotusFlowerFront.obj",new Vector3D(-1.5f, .6,4f), Color.YELLOW, material1));
+        scene03.addObject(OBJReader.GetModel3D("LotusFlowerFront.obj",new Vector3D(1.5f, .6,4f), Color.YELLOW, material1));
+        scene03.addObject(OBJReader.GetModel3D("LotusFlowerFront.obj",new Vector3D(0f, 1.8,4f), Color.YELLOW, material1));
+
+        scene03.addObject(OBJReader.GetModel3D("lotusx90.obj",new Vector3D(-3f, 0,-3.5f), Color.MAGENTA, material1));
+        scene03.addObject(OBJReader.GetModel3D("lotusx90.obj",new Vector3D(4f, 0,2.5f), Color.MAGENTA, material1));
+        scene03.addObject(OBJReader.GetModel3D("lotusx90.obj",new Vector3D(4f, 0,-2.5f), Color.MAGENTA, material1));
+
+        scene03.addObject(OBJReader.GetModel3D("Cube.obj",new Vector3D(-2f, 0,-3.9f), Color.WHITE, material3));
+
+        //scene showing picture
+        BufferedImage image = raytrace(scene03);
         File outputImage = new File("image.png");
         try {
             ImageIO.write(image, "png", outputImage);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         System.out.println(new Date());
     }
 
+    /**
+     *
+     * @param scene
+     * @return a BufferedImage you have rendered the parameter scene
+     */
     public static BufferedImage raytrace(Scene scene) {
         Camera mainCamera = scene.getCamera();
         float[] nearFarPlanes = mainCamera.getNearFarPlanes();
@@ -66,7 +148,6 @@ public class Raytracer {
         BufferedImage image = new BufferedImage(mainCamera.getResolutionWidth(), mainCamera.getResolutionHeight(), BufferedImage.TYPE_INT_RGB);
         List<Object3D> objects = scene.getObjects();
         List<Light> lights = scene.getLights();
-
 
 
         Vector3D[][] positionsToRaytrace = mainCamera.calculatePositionsToRay();
@@ -80,27 +161,23 @@ public class Raytracer {
                 Intersection closestIntersection = raycast(ray, objects, null, new float[]{cameraZ + nearFarPlanes[0], cameraZ + nearFarPlanes[1]});
 
                 Color pixelColor = Color.BLACK;
-                boolean shadow = false;
                 double specular;
 
                 if (closestIntersection != null) {
-                    Color objColor = closestIntersection.getObject().getColor();
+                    Color objColor;
 
                     for (Light light : lights) {
-
-                        //nuevo rayo para calcular sombras, checar si hay intersecciones
+                        //new ray to calculate shadows and check intersections
                         Ray ray2 = new Ray(Vector3D.add(closestIntersection.getPosition(), Vector3D.scalarMultiplication(closestIntersection.getNormal(), 0.28)), light.getPosition());
                         Intersection otherIntersection = raycast(ray2, objects,null, null);
 
-                        //si no hay intersección, calculate Color, lights...
                         if(otherIntersection == null){
-
                             if(closestIntersection.getObject().getMaterial().isReflection()){
                                 //calculate reflection
                                 closestIntersection = reflection(closestIntersection, scene,0);
                             }
 
-                            if(closestIntersection.getObject().getMaterial().isReflactive()){
+                            if(closestIntersection.getObject().getMaterial().isRefractive()){
                                 //caculate reflactive
                                 closestIntersection = refraction(closestIntersection,scene,ray);
                             }
@@ -131,19 +208,12 @@ public class Raytracer {
                             Color diffuse = new Color(clamp(objColors[0], 0, 1), clamp(objColors[1], 0, 1), clamp(objColors[2], 0, 1));
                             pixelColor = addColor(pixelColor, diffuse);
                         }
-                        /*else{
-                            shadow = true;
-                            pixelColor = Color.BLACK;
-                        }*/
                     }
                 }
 
                 Color ambientColor = new Color(0.05f, 0.05f, 0.05f);
                 pixelColor = addColor(pixelColor, ambientColor);
 
-                /*if(shadow){
-                    pixelColor = Color.BLUE;
-                }*/
                 image.setRGB(i, j, pixelColor.getRGB());
             }
         }
@@ -151,6 +221,12 @@ public class Raytracer {
         return image;
     }
 
+    /**
+     *
+     * @param interscNormal
+     * @param interscCamera
+     * @return the Vector3D to cast reflection.
+     */
     public static Vector3D reflectV3D(Vector3D interscNormal, Vector3D interscCamera){
         Vector3D reflect;
         double nDotc= Vector3D.dotProduct(interscNormal,interscCamera);
@@ -160,7 +236,14 @@ public class Raytracer {
         return reflect;
     }
 
-    public static Intersection reflection(Intersection closestIntersection, Scene scene, int repeats ){
+    /**
+     *
+     * @param closestIntersection
+     * @param scene
+     * @param repeats-recursion limit
+     * @return the intersection with reflection values.
+     */
+    public static Intersection reflection(Intersection closestIntersection, Scene scene, int repeats){
         if(repeats <= 1){
             Vector3D interscNormal = closestIntersection.getNormal();
             Vector3D cameraInters = Vector3D.substract(closestIntersection.getPosition(), scene.getCamera().getPosition());
@@ -189,6 +272,13 @@ public class Raytracer {
         return closestIntersection;
     }
 
+    /**
+     *
+     * @param closestIntersection
+     * @param scene
+     * @param ray
+     * @return the intersection with refraction values.
+     */
     public static Intersection refraction(Intersection closestIntersection, Scene scene, Ray ray){
         Vector3D nRefr = Vector3D.normalize(ray.getDirection());
         double nDotR = Vector3D.dotProduct(closestIntersection.getNormal(),nRefr);
@@ -206,7 +296,12 @@ public class Raytracer {
                     return closestIntersection;
                 }
                 else{
-                    return refraction(refracIntersc,scene,ray);
+                    if(refracIntersc == null){
+                        return closestIntersection;
+                    }
+                    else{
+                        return refraction(refracIntersc,scene,ray);
+                    }
                 }
             }
         }
@@ -214,6 +309,13 @@ public class Raytracer {
         return  closestIntersection;
     }
 
+    /**
+     *
+     * @param value
+     * @param min
+     * @param max
+     * @return the maximized or minimized value within the parameters.
+     */
     public static float clamp(float value, float min, float max) {
         if (value < min) {
             return min;
@@ -224,6 +326,12 @@ public class Raytracer {
         return value;
     }
 
+    /**
+     *
+     * @param original
+     * @param otherColor
+     * @return color combined with another
+     */
     public static Color addColor(Color original, Color otherColor) {
         float red = clamp((original.getRed() / 255f) + (otherColor.getRed() / 255f), 0, 1);
         float green = clamp((original.getGreen() / 255f) + (otherColor.getGreen() / 255f), 0, 1);
@@ -231,6 +339,14 @@ public class Raytracer {
         return new Color(red, green, blue);
     }
 
+    /**
+     *
+     * @param ray
+     * @param objects
+     * @param caster
+     * @param clippingPlanes
+     * @return the intersection found in the direction of the ray, in case there is no returns null.
+     */
     public static Intersection raycast(Ray ray, List<Object3D> objects, Object3D caster, float[] clippingPlanes) {
         Intersection closestIntersection = null;
 

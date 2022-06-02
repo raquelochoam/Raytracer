@@ -6,7 +6,10 @@ package edu.up.isgc.raytracer;
 
 import edu.up.isgc.raytracer.Intersection;
 import edu.up.isgc.raytracer.Ray;
-
+/**
+ * @author Jafet Rodriguez
+ *
+ */
 public interface IIntersectable {
     Intersection getIntersection(Ray ray);
 }

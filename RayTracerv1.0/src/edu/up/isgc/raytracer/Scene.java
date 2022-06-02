@@ -10,13 +10,19 @@ import edu.up.isgc.raytracer.objects.Object3D;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @author Jafet Rodriguez
+ *
+ */
 public class Scene {
 
     private Camera camera;
     private List<Object3D> objects;
     private List<Light> lights;
 
+    /**
+     * Constructor
+     */
     public Scene() {
         setObjects(new ArrayList<>());
         setLights(new ArrayList<>());
